@@ -13,6 +13,18 @@
                         <a href="{{ route('blog.create') }}" class="btn btn-primary btn-sm">Add Blog</a>
                     </div>
                 </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label><strong>Status :</strong></label>
+                            <select id='status' class="form-control" style="width: 200px">
+                                <option value="">--Select Status--</option>
+                                <option value="1">Published</option>
+                                <option value="0">Unpublished</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
                 <table id="blog-datatable" class="table table-bordered data-table">
                     <thead>
                     <tr>
@@ -35,7 +47,13 @@
         var table = $('#blog-datatable').DataTable({
             processing: true,
             serverSide: true,
-            ajax: "{{ route('blog.datatable') }}",
+            ajax: {
+                url: "{{ route('blog.datatable') }}",
+                data: function (d) {
+                    d.status = $('#status').val(),
+                        d.search = $('input[type="search"]').val()
+                }
+            },
             columns: [
                 {data: 'id', name: 'id'},
                 {data: 'title', name: 'title'},
@@ -44,9 +62,9 @@
                     name: 'status',
                     render: function (data) {
                         if (data === 0) {
-                            return 'Unpublish'
+                            return '<span class="badge badge-danger">Unpublished</span>'
                         }
-                        return 'Published';
+                        return '<span class="badge badge-success">Published</span>';
                     }
                 },
                 {
@@ -63,6 +81,10 @@
                     searchable: true
                 },
             ]
+        });
+
+        $('#status').change(function(){
+            table.draw();
         });
 
         $(document).on('click', '.delete', function () {

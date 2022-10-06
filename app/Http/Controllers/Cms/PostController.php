@@ -102,15 +102,31 @@ class PostController extends Controller
     public function getDatatables(Request $request)
     {
         if ($request->ajax()) {
-            $userId = Auth::user()->id;
-            $data = Post::where('user_id', $userId)->get();
+            $user = Auth::user();
+            if($user->hasRole('Admin')) {
+                $data = Post::latest();
+            } else {
+                $data = Post::where('user_id', $user->id)->latest();
+            }
             return Datatables::of($data)
                 ->addIndexColumn()
-                ->addColumn('action', function($row){
+                ->addColumn('action', function($row)  {
                     $actionBtn = '<a href="/admin/blog/'.$row->id.'/edit" class="edit btn btn-success btn-sm">Edit</a> <a href="javascript:void(0)" data-id="' .$row->id .'" class="delete btn btn-danger btn-sm">Delete</a> ';
-                    if($row->status == 0)
+                    if($row->status == 0 && Auth::user()->hasRole('Admin'))
                     $actionBtn .= '<a href="javascript:void(0)" data-id="' .$row->id .'" class="publish btn btn-primary btn-sm">Publish</a>';
                     return $actionBtn;
+                })
+                ->filter(function ($instance) use ($request) {
+                    if ($request->get('status') == '0' || $request->get('status') == '1') {
+                        $instance->where('status', $request->get('status'));
+                    }
+
+                    if (!empty($request->get('search'))) {
+                        $instance->where(function($w) use($request){
+                            $search = $request->get('search');
+                            $w->orWhere('title', 'LIKE', "%$search%");
+                        });
+                    }
                 })
                 ->rawColumns(['action'])
                 ->make(true);
