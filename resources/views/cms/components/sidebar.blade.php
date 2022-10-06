@@ -18,10 +18,10 @@
             </a>
             <ul class="collapse list-unstyled" id="postSubmenu">
                 <li>
-                    <a href="#">All posts</a>
+                    <a href="{{route('blog.index')}}">All posts</a>
                 </li>
                 <li>
-                    <a href="#">Add post</a>
+                    <a href="{{route('blog.create')}}">Add post</a>
                 </li>
             </ul>
         </li>

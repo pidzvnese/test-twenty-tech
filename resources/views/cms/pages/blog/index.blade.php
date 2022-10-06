@@ -56,7 +56,13 @@
             },
             columns: [
                 {data: 'id', name: 'id'},
-                {data: 'title', name: 'title'},
+                {
+                    data: 'title',
+                    name: 'title',
+                    render: function (data, type, row) {
+                        return '<a href="/blog/' + row.id + '">' +  data + '</a>';
+                    }
+                },
                 {
                     data: 'status',
                     name: 'status',
