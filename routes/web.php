@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-//Auth::routes();
+Auth::routes();
 
 Route::get('/', [AppHomeController::class, 'index'])->name('app.home');
 Route::get('/login', [LoginController::class, 'getLoginForm'])->name('login');
