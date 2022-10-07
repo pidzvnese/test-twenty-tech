@@ -23,7 +23,6 @@ Auth::routes();
 
 Route::get('/', [AppHomeController::class, 'index'])->name('app.home');
 Route::get('/login', [LoginController::class, 'getLoginForm'])->name('login');
-Route::post('/login', [LoginController::class, 'login'])->name('login');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::get('/register', [RegisterController::class,'showRegistrationForm'])->name('register');
 Route::get('/blog/{post}', [AppPostController::class, 'show']);
